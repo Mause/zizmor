@@ -1,0 +1,45 @@
+diff --git a/aws-lc/crypto/rand_extra/internal.h b/aws-lc/crypto/rand_extra/internal.h
+index 8a6af5f..e9fadee 100644
+--- a/aws-lc/crypto/rand_extra/internal.h
++++ b/aws-lc/crypto/rand_extra/internal.h
+@@ -10,10 +10,12 @@
+ #define OPENSSL_RAND_DETERMINISTIC
+ #elif defined(OPENSSL_WINDOWS)
+ #define OPENSSL_RAND_WINDOWS
+-#elif defined(OPENSSL_MACOS) || defined(OPENSSL_OPENBSD) || \
+-    defined(OPENSSL_FREEBSD)  || defined(OPENSSL_NETBSD) || \
+-    defined(OPENSSL_SOLARIS) || \
+-    (defined(OPENSSL_LINUX) && !defined(HAVE_LINUX_RANDOM_H))
++#elif defined(OPENSSL_MACOS) || defined(OPENSSL_OPENBSD) ||                    \
++    defined(OPENSSL_FREEBSD) || defined(OPENSSL_NETBSD) ||                     \
++    defined(OPENSSL_SOLARIS) ||                                                \
++    (defined(OPENSSL_LINUX) && !defined(HAVE_LINUX_RANDOM_H) &&                \
++         !defined(__ANDROID__) ||                                              \
++     __ANDROID_API__ >= 28)
+ #define OPENSSL_RAND_GETENTROPY
+ #elif defined(OPENSSL_IOS)
+ #define OPENSSL_RAND_CCRANDOMGENERATEBYTES
+@@ -46,7 +48,7 @@ OPENSSL_INLINE int CRYPTO_sysrand_if_available(uint8_t *buf, size_t len) {
+   CRYPTO_sysrand(buf, len);
+   return 1;
+ }
+-#endif  // defined(OPENSSL_RAND_URANDOM)
++#endif // defined(OPENSSL_RAND_URANDOM)
+ 
+ // Don't retry forever. There is no science in picking this number and can be
+ // adjusted in the future if need be. We do not backoff forever, because we
+@@ -54,11 +56,10 @@ OPENSSL_INLINE int CRYPTO_sysrand_if_available(uint8_t *buf, size_t len) {
+ // spinning loops.
+ #define MAX_BACKOFF_RETRIES 9
+ 
+-OPENSSL_EXPORT int vm_ube_fallback_get_seed(
+-    uint8_t seed[CTR_DRBG_ENTROPY_LEN]);
++OPENSSL_EXPORT int vm_ube_fallback_get_seed(uint8_t seed[CTR_DRBG_ENTROPY_LEN]);
+ 
+ #if defined(__cplusplus)
+-}  // extern C
++} // extern C
+ #endif
+ 
+-#endif  // AWSLC_HEADER_CRYPTO_RAND_EXTRA_RAND_INTERNAL_H
++#endif // AWSLC_HEADER_CRYPTO_RAND_EXTRA_RAND_INTERNAL_H
