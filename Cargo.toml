@@ -93,6 +93,12 @@ print_stderr = "warn"
 print_stdout = "warn"
 unwrap_used = "warn"
 
+[workspace.metadata.patch]
+crates = ["aws-lc-sys"]
+
+[patch.crates-io]
+aws-lc-sys = { path = "./target/patch/aws-lc-sys-0.36.0" }
+
 [profile.dev.package]
 insta.opt-level = 3
 
